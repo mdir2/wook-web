@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ino.web.freeBoard.mapper.FreeBoardMapper">
+	<select id="selectListByFreeBoard" resultType="freeBoardDto" parameterType="freeBoardDto">
+		SELECT
+				num
+				, title
+				, name
+				, regdate
+				, content
+		FROM (
+				SELECT 
+					ROW_NUMBER() OVER(ORDER BY num DESC) rnum
+					, num
+					, title
+					, name
+					, TO_CHAR(regdate,'YYYY-MM-DD') regdate
+					, content
+				FROM FREEBOARD
+		) WHERE rnum BETWEEN #{start} AND #{end}
+	</select>
+	
+	<select id="totalCountByFreeBoard" resultType="int">
+		SELECT COUNT(*) FROM FREEBOARD
+	</select>
+	
+	<select id="selectOneByFreeBoard" resultType="freeBoardDto" parameterType="freeBoardDto">
+		SELECT NUM, TITLE, NAME, TO_CHAR(REGDATE,'YYYY/MM/DD') REGDATE, CONTENT FROM FREEBOARD
+		WHERE NUM=#{num}
+	</select>
+	
+	<select id="selectOneByFreeBoardMap" resultType="freeBoardDto" parameterType="HashMap">
+		SELECT NUM, TITLE, NAME, TO_CHAR(REGDATE,'YYYY/MM/DD') REGDATE, CONTENT FROM FREEBOARD
+		WHERE NUM=#{num}
+	</select>
+</mapper>
